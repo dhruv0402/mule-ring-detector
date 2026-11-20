@@ -1,0 +1,90 @@
+{
+  "edge_level": {
+    "m1_raw": {
+      "name": "LightGBM (Tabular Raw)",
+      "pr_auc": 0.005541332153400354,
+      "threshold": 1.0,
+      "precision": 0.006663930270178912,
+      "recall": 0.6143572621035058,
+      "f1": 0.013184844594392859,
+      "tp": 1104,
+      "fp": 164564,
+      "fn": 693,
+      "p_at_20": 0.05,
+      "r_at_20": 0.0005564830272676684,
+      "p_at_50": 0.04,
+      "r_at_50": 0.0011129660545353367
+    },
+    "m2_graph": {
+      "name": "LightGBM (Causal Graph)",
+      "pr_auc": 0.04564158162005738,
+      "threshold": 1.0,
+      "precision": 0.05125474272781735,
+      "recall": 0.8569838619922092,
+      "f1": 0.09672455484721917,
+      "tp": 1540,
+      "fp": 28506,
+      "fn": 257,
+      "p_at_20": 0.1,
+      "r_at_20": 0.0011129660545353367,
+      "p_at_50": 0.04,
+      "r_at_50": 0.0011129660545353367
+    }
+  },
+  "ring_level": {
+    "n_true_rings_test": 192,
+    "n_pred_rings": 11270,
+    "jaccard_0.5": {
+      "ring_recall": 0.4010416666666667,
+      "ring_precision": 0.0068322981366459624,
+      "n_matched": 77
+    },
+    "jaccard_0.3": {
+      "ring_recall": 0.5052083333333334,
+      "ring_precision": 0.008606921029281277,
+      "n_matched": 97
+    },
+    "pattern_recall": {
+      "GATHER-SCATTER": {
+        "total": 39,
+        "detected": 23,
+        "recall": 0.5897435897435898
+      },
+      "STACK": {
+        "total": 26,
+        "detected": 1,
+        "recall": 0.038461538461538464
+      },
+      "SCATTER-GATHER": {
+        "total": 23,
+        "detected": 14,
+        "recall": 0.6086956521739131
+      },
+      "CYCLE": {
+        "total": 25,
+        "detected": 20,
+        "recall": 0.8
+      },
+      "RANDOM": {
+        "total": 17,
+        "detected": 14,
+        "recall": 0.8235294117647058
+      },
+      "FAN-IN": {
+        "total": 20,
+        "detected": 11,
+        "recall": 0.55
+      },
+      "FAN-OUT": {
+        "total": 21,
+        "detected": 12,
+        "recall": 0.5714285714285714
+      },
+      "BIPARTITE": {
+        "total": 21,
+        "detected": 2,
+        "recall": 0.09523809523809523
+      }
+    }
+  }
+}
