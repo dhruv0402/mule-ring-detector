@@ -4,6 +4,8 @@ data/processed/*
 !data/processed/.gitkeep
 reports/*
 !reports/.gitkeep
+!reports/*.md
+!reports/*.json
 *.ckpt
 *.pt
 .env
