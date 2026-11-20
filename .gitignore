@@ -6,7 +6,8 @@ reports/*
 !reports/.gitkeep
 !reports/*.md
 !reports/*.json
-!reports/figures/*
+!reports/figures/
+!reports/figures/**
 *.ckpt
 *.pt
 .env
