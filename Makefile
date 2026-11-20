@@ -28,7 +28,7 @@ evaluate:
 	$(PY) -m mulering.evaluation.run --config configs/config.yaml
 
 app:
-	streamlit run src/mulering/app/streamlit_app.py
+	PYTHONPATH=src streamlit run src/mulering/app/streamlit_app.py
 
 test:
 	PYTHONPATH=src pytest -q

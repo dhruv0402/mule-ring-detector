@@ -2,6 +2,13 @@
 from __future__ import annotations
 import json
 from pathlib import Path
+import sys
+
+# Ensure src/ is on sys.path regardless of how streamlit is launched
+_SRC_DIR = Path(__file__).resolve().parent.parent.parent
+if str(_SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(_SRC_DIR))
+
 import networkx as nx
 import pandas as pd
 from pyvis.network import Network
