@@ -1,0 +1,24 @@
+# Core
+numpy
+pandas
+pyarrow
+pyyaml
+scikit-learn
+lightgbm
+xgboost
+shap
+networkx
+python-louvain
+matplotlib
+# App
+streamlit
+pyvis
+# Dev
+pytest
+kaggle
+# GNN: install PyTorch and PyTorch Geometric separately, matching your CUDA/CPU build.
+# See https://pytorch.org and https://pytorch-geometric.readthedocs.io
+# torch
+# torch_geometric
+# Optional graph DB
+# neo4j

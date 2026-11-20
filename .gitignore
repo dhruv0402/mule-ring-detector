@@ -1,0 +1,14 @@
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+reports/*
+!reports/.gitkeep
+*.ckpt
+*.pt
+.env
+kaggle.json
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+.pytest_cache/

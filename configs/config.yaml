@@ -1,0 +1,24 @@
+dataset:
+  name: ibm_hi_small          # ibm_hi_small | ibm_li_small | ibm_hi_medium | saml_d
+  raw_dir: data/raw/ibm
+  trans_file: HI-Small_Trans.csv
+  accounts_file: HI-Small_accounts.csv
+  patterns_file: HI-Small_Patterns.txt
+  processed_dir: data/processed/ibm_hi_small
+split:
+  fractions: [0.6, 0.2, 0.2]  # train / val / test, by time
+seed: 42
+features:
+  windows_hours: [1, 24, 168]
+  max_cycle_len: 3            # start with 2-3, extend later
+model:
+  lightgbm:
+    n_estimators: 2000
+    learning_rate: 0.05
+    num_leaves: 63
+    early_stopping_rounds: 100
+rings:
+  seed_quantile_note: "threshold comes from validation F1, stored in reports/threshold.json"
+  max_ring_accounts: 300
+  match_jaccard: [0.5, 0.3]
+reports_dir: reports
