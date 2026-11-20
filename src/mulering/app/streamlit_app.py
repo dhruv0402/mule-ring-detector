@@ -212,6 +212,33 @@ with tab_graph:
         show_cols = [c for c in ["edge_id", "ts", "src", "dst", "amount_sent", "cur_sent", "score", "label"] if c in member_edges.columns]
         st.dataframe(member_edges[show_cols], use_container_width=True, hide_index=True)
 
+        # Regulatory SAR Narrative Section
+        st.markdown("---")
+        with st.expander("📄 Generate FinCEN Suspicious Activity Report (SAR) Narrative", expanded=False):
+            from mulering.app.sar_generator import generate_sar_narrative
+            sar_text = generate_sar_narrative(ring, member_edges)
+            st.markdown(sar_text)
+            st.download_button(
+                label=f"📥 Download FinCEN SAR Filing (Ring #{ring['pred_ring_id']})",
+                data=sar_text,
+                file_name=f"SAR_CASE_RING_{int(ring['pred_ring_id']):04d}.txt",
+                mime="text/plain",
+            )
+
+        # Account Profile Deep-Dive Inspector
+        with st.expander("👤 Mule Account Profile Inspector", expanded=False):
+            acct_choice = st.selectbox("Select Account from Ring:", options=sorted(list(nodes)))
+            acct_sent = member_edges[member_edges["src"] == acct_choice]
+            acct_recv = member_edges[member_edges["dst"] == acct_choice]
+
+            col_a1, col_a2, col_a3, col_a4 = st.columns(4)
+            col_a1.metric("Transfers Sent", len(acct_sent))
+            col_a2.metric("Total Sent Volume", f"${acct_sent['amount_sent'].sum():,.2f}" if not acct_sent.empty else "$0.00")
+            col_a3.metric("Transfers Received", len(acct_recv))
+            col_a4.metric("Total Received Volume", f"${acct_recv['amount_sent'].sum():,.2f}" if not acct_recv.empty else "$0.00")
+
+            st.caption(f"Counterparties transacted with in this case: {len(set(acct_sent['dst']).union(set(acct_recv['src'])))} unique accounts.")
+
 # ----------------- TAB 3: Capstone Rigor & Metrics -----------------
 with tab_metrics:
     st.subheader("📊 Capstone Evaluation & Benchmark")
