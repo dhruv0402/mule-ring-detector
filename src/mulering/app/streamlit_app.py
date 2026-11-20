@@ -228,7 +228,7 @@ with tab_metrics:
             m_data = []
             for m_name, m_vals in edge_res.items():
                 m_data.append({
-                    "Model": "M1 (Raw Tabular)" if "m1" in m_name else "M2 (Graph-Augmented)",
+                    "Model": m_vals.get("name", m_name),
                     "PR-AUC": f"{m_vals.get('pr_auc', 0):.4f}",
                     "Minority F1": f"{m_vals.get('f1', 0):.4f}",
                     "Precision": f"{m_vals.get('precision', 0):.4f}",

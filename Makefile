@@ -1,5 +1,7 @@
 PY=PYTHONPATH=src python
-.PHONY: mock-data data ingest features train-baseline train-gnn rings evaluate app test
+.PHONY: all mock-data data ingest features train-baseline train-gnn rings evaluate app test
+
+all: mock-data ingest features train-baseline train-gnn rings evaluate
 
 mock-data:
 	$(PY) -m mulering.data.generate_mock

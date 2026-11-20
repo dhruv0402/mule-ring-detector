@@ -33,18 +33,21 @@ def run_evaluation(config_path: str = "configs/config.yaml"):
     y_true = te_df["label"].to_numpy()
     score_m1 = te_df["score_m1"].to_numpy()
     score_m2 = te_df["score_m2"].to_numpy()
+    score_gnn = te_df["score_gnn"].to_numpy() if "score_gnn" in te_df.columns else None
 
     # Load thresholds
-    th_m1, th_m2 = 0.5, 0.5
+    th_m1, th_m2, th_gnn = 0.5, 0.5, 0.5
     if thresh_file.exists():
         with open(thresh_file) as f:
             t_data = json.load(f)
             th_m1 = t_data.get("m1_raw", {}).get("threshold", 0.5)
             th_m2 = t_data.get("m2_graph", {}).get("threshold", 0.5)
+            th_gnn = t_data.get("m3_gnn", {}).get("threshold", 0.5)
 
     # 1. Edge-level Evaluation
     edge_metrics = {
         "m1_raw": {
+            "name": "LightGBM (Tabular Raw)",
             "pr_auc": pr_auc(y_true, score_m1),
             "threshold": th_m1,
             **minority_prf(y_true, score_m1, th_m1),
@@ -54,6 +57,7 @@ def run_evaluation(config_path: str = "configs/config.yaml"):
             "r_at_50": recall_at_k(y_true, score_m1, 50),
         },
         "m2_graph": {
+            "name": "LightGBM (Causal Graph)",
             "pr_auc": pr_auc(y_true, score_m2),
             "threshold": th_m2,
             **minority_prf(y_true, score_m2, th_m2),
@@ -63,6 +67,18 @@ def run_evaluation(config_path: str = "configs/config.yaml"):
             "r_at_50": recall_at_k(y_true, score_m2, 50),
         },
     }
+
+    if score_gnn is not None:
+        edge_metrics["m3_gnn"] = {
+            "name": "Directed Multigraph GNN",
+            "pr_auc": pr_auc(y_true, score_gnn),
+            "threshold": th_gnn,
+            **minority_prf(y_true, score_gnn, th_gnn),
+            "p_at_20": precision_at_k(y_true, score_gnn, 20),
+            "r_at_20": recall_at_k(y_true, score_gnn, 20),
+            "p_at_50": precision_at_k(y_true, score_gnn, 50),
+            "r_at_50": recall_at_k(y_true, score_gnn, 50),
+        }
 
     # 2. Ring-level Evaluation
     ring_metrics = {}
@@ -120,14 +136,14 @@ def run_evaluation(config_path: str = "configs/config.yaml"):
         json.dump(full_results, f, indent=2)
 
     # Print summary table
-    print("\n" + "=" * 55)
-    print("           CAPSTONE EVALUATION REPORT")
-    print("=" * 55)
+    print("\n" + "=" * 65)
+    print("                     CAPSTONE BENCHMARK REPORT")
+    print("=" * 65)
     print("--- 1. Transaction-Level Metrics ---")
-    print(f"{'Model':<16} {'PR-AUC':<10} {'F1':<10} {'Prec':<10} {'Rec':<10} {'P@20':<10}")
-    print("-" * 55)
-    for name, m in edge_metrics.items():
-        print(f"{name:<16} {m['pr_auc']:<10.4f} {m['f1']:<10.4f} {m['precision']:<10.4f} {m['recall']:<10.4f} {m['p_at_20']:<10.4f}")
+    print(f"{'Model':<25} {'PR-AUC':<10} {'F1':<10} {'Prec':<10} {'Rec':<10} {'P@20':<10}")
+    print("-" * 65)
+    for key, m in edge_metrics.items():
+        print(f"{m['name']:<25} {m['pr_auc']:<10.4f} {m['f1']:<10.4f} {m['precision']:<10.4f} {m['recall']:<10.4f} {m['p_at_20']:<10.4f}")
 
     print("\n--- 2. Ring-Level Metrics (Test Set) ---")
     if ring_metrics:
@@ -138,7 +154,7 @@ def run_evaluation(config_path: str = "configs/config.yaml"):
         print("\nRecall by Laundering Pattern:")
         for ptype, counts in ring_metrics.get("pattern_recall", {}).items():
             print(f"  - {ptype:<16}: {counts['detected']}/{counts['total']} ({counts['recall']:.2%})")
-    print("=" * 55)
+    print("=" * 65)
     print(f"Saved evaluation metrics to {out_json}")
 
 
